@@ -108,9 +108,9 @@ class JeuCasseBrique:
                 self.InitObjets()
             # positionne la balle au-dessus de la raquette
             px, py = self.Raquette.center()
-            self.Balle.set_position(px, py - 30)
+            self.Balle.VerifierVitesse(px, py - 30)
             # petite vitesse initiale
-            self.Balle.reset_velocity(vx=self.Balle.vitesseBalle * 0.6, vy=-abs(self.Balle.vitesseBalle * 0.6))
+            self.Balle.ChangerVitesse(vx=self.Balle.__vitesseBalle * 0.6, vy=-abs(self.Balle.__vitesseBalle * 0.6))
 
     def Boucle(self):
         '''Boucle périodique qui met à jour l'état du jeu quand il tourne.'''
@@ -138,39 +138,39 @@ class JeuCasseBrique:
     def CollisionsMur(self):
         '''Gère la réflexion de la balle sur les bords du canevas.'''
         # coordonnées actuelles de la balle
-        x1, y1, x2, y2 = self.Balle.coords()
+        x1, y1, x2, y2 = self.Balle.CordsBalle()
         # collision gauche
-        if x1 <= 0 and self.Balle.vx < 0:
+        if x1 <= 0 and self.Balle.__vx < 0:
             self.Balle.RebondX()
         # collision droite
-        if x2 >= self.Largeur and self.Balle.vx > 0:
+        if x2 >= self.Largeur and self.Balle.__vx > 0:
             self.Balle.RebondX()
         # collision haut
-        if y1 <= 0 and self.Balle.vy < 0:
+        if y1 <= 0 and self.Balle.__vy < 0:
             self.Balle.RebondY()
 
     def CollisionsPaddle(self):
         '''Gère les collisions entre la balle et la raquette.'''
         # trouve les objets qui chevauchent la balle
-        items = self.Canevas.find_overlapping(*self.Balle.coords())
+        items = self.Canevas.find_overlapping(*self.Balle.CordsBalle())
         paddle_id = self.Raquette.id
         # si on touche la raquette et que la balle descend
-        if paddle_id in items and self.Balle.vy > 0:
+        if paddle_id in items and self.Balle.__vy > 0:
             # réflexion selon la règle d'angle de la raquette
             self.Balle.RebondRaquette(self.Raquette.coords())
 
             # on repositionne la balle au-dessus de la raquette pour éviter qu'elle colle
-            bx1, by1, bx2, by2 = self.Balle.coords()
+            bx1, by1, bx2, by2 = self.Balle.CordsBalle()
             px1, py1, px2, py2 = self.Raquette.coords()
-            overlap = by2 - py1
-            if overlap > 0:
-                self.Canevas.move(self.Balle.id, 0, -overlap - 1)
+            Ecart = by2 - py1
+            if Ecart > 0:
+                self.Canevas.move(self.Balle.id, 0, -Ecart - 1)
 
     def CollisionsBriques(self):
         '''Gère les collisions entre la balle et les briques et supprime les briques touchées.'''
         collided = []
         # récupère les items qui chevauchent la balle
-        for item in self.Canevas.find_overlapping(*self.Balle.coords()):
+        for item in self.Canevas.find_overlapping(*self.Balle.CordsBalle()):
             if item in self.Briques:
                 collided.append(item)
         for bid in collided:
@@ -178,7 +178,7 @@ class JeuCasseBrique:
             if not brique:
                 continue
             # calcul des recouvrements pour déterminer l'axe de réflexion
-            bb = self.Balle.coords()
+            bb = self.Balle.CordsBalle()
             brect = self.Canevas.coords(bid)
             ox = max(0, min(bb[2], brect[2]) - max(bb[0], brect[0]))
             oy = max(0, min(bb[3], brect[3]) - max(bb[1], brect[1]))
@@ -201,7 +201,7 @@ class JeuCasseBrique:
 
     def VerifierSortie(self):
         '''Vérifie si la balle est sortie par le bas et gère la perte de vie / reset.'''
-        x1, y1, x2, y2 = self.Balle.coords()
+        x1, y1, x2, y2 = self.Balle.CordsBalle()
         # si la balle est sortie en bas
         if y1 > self.Hauteur:
             vies = self.ViesVar.get() - 1
@@ -214,7 +214,7 @@ class JeuCasseBrique:
             else:
                 # repositionne la balle et attend l'utilisateur pour redémarrer
                 px, py = self.Raquette.center()
-                self.Balle.set_position(px, py - 30)
+                self.Balle.VerifierVitesse(px, py - 30)
 
     def Victoire(self):
         '''Affiche la boîte de dialogue de victoire et arrête le jeu.'''
