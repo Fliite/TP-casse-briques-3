@@ -11,7 +11,7 @@ class JeuCasseBrique:
         self.Racine = racine
         # titre de la fenêtre
         self.Racine.title("Jeu de casse-briques")
-        # dimensions du canevas
+        # On peut changer les dimensions du canevas à sa guise
         self.Largeur, self.Hauteur = 900, 600
         # création du canevas où tout est dessiné
         self.Canevas = tk.Canvas(self.Racine, width=self.Largeur, height=self.Hauteur, bg="black")
@@ -61,7 +61,7 @@ class JeuCasseBrique:
 
     def CreerBriques(self, lignes=1, colonnes=10, espace=2, EspaceSuperieur=50):
         '''Crée une grille de briques en haut du canevas.'''
-        # calcul de la largeur d'une brique en tenant compte des marges
+        # calcul en tenant compte de la taille de la fenetre
         LBrique = (self.Largeur - espace * (colonnes + 1)) / colonnes
         # hauteur fixe des briques
         HBrique = 22

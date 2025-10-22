@@ -11,13 +11,18 @@ class Balle:
         self._prev_bbox = self.canvas.coords(self.id)
 
     def coords(self):
+        ''' Renvoie les coordonnées actuelles de la balle sous la forme (x1, y1, x2, y2) '''
         return self.canvas.coords(self.id)
 
     def move(self):
+        ''' Déplace la balle selon sa vitesse '''
         self._prev_bbox = self.coords()
         self.canvas.move(self.id, self.vx, self.vy)
 
-    def set_position(self, x, y):
+    def Position(self, x, y):
+        ''' Permet de positionner la balle aux coordonnées (x, y) 
+         en déplaçant la balle de sa position actuelle à la nouvelle position
+        '''
         x1, y1, x2, y2 = self.coords()
         cx = (x1 + x2) / 2
         cy = (y1 + y2) / 2
@@ -26,17 +31,23 @@ class Balle:
         self.canvas.move(self.id, dx, dy)
         self._prev_bbox = self.coords()
 
-    def reset_velocity(self, vx=None, vy=None):
+    def VerifierVitesse(self, vx=None, vy=None):
+        ''' Permet de modifier la vitesse de la balle 
+        elle prend en argument la nouvelle vitesse en x et/ou y
+        '''
         if vx is not None: self.vx = vx
         if vy is not None: self.vy = vy
 
     def RebondX(self):
+        ''' Inverse la vitesse en x de la balle '''
         self.vx = -self.vx
 
     def RebondY(self):
+        ''' Inverse la vitesse en y de la balle '''
         self.vy = -self.vy
 
     def vitesseBalle_set(self, vitesseBalle):
+        ''' Modifie la vitesse de la balle en conservant son angle de déplacement '''
         signx = 1 if self.vx >= 0 else -1
         signy = 1 if self.vy >= 0 else -1
         ang = math.atan2(abs(self.vy), abs(self.vx))
@@ -45,7 +56,7 @@ class Balle:
         self.vitesseBalle = vitesseBalle
 
     def RebondRaquette(self, paddle_bbox, max_angle_deg=75):
-        # compute hit PosRelativeative position (-1 left ... +1 right)
+        '''Permet de gérer le rebond de la balle sur la raquette en fonction de la position d'impact'''
         bx1, by1, bx2, by2 = self.coords()
         RaquetteX1, paddle_y1, RaquetteX2, paddle_y2 = paddle_bbox
         CentreBalle = (bx1 + bx2) / 2 # C'est le centre de la balle
@@ -61,4 +72,5 @@ class Balle:
         self.vy = -abs(vitesseBalle * math.cos(angle))
 
     def prev_bbox(self):
+        ''' Renvoie les coordonnées précédentes de la balle sous la forme (x1, y1, x2, y2) '''
         return self._prev_bbox
