@@ -59,7 +59,7 @@ class JeuCasseBrique:
         # création des briques
         self.CreerBriques()
 
-    def CreerBriques(self, lignes=10, colonnes=10, espace=2, EspaceSuperieur=50):
+    def CreerBriques(self, lignes=1, colonnes=10, espace=2, EspaceSuperieur=50):
         '''Crée une grille de briques en haut du canevas.'''
         # calcul de la largeur d'une brique en tenant compte des marges
         LBrique = (self.Largeur - espace * (colonnes + 1)) / colonnes
